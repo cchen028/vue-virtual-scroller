@@ -1,0 +1,31 @@
+name: VirtualScroller CI
+
+on:
+  push:
+    branches:
+      - develop
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [8.x, 10.x, 12.x]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+        registry-url: 'https://npm.pkg.github.com'
+        scope: '@AkryumInfinitum'
+    - run: yarn
+    - run: yarn build
+    - run: 'yarn publish --new-version "$(yarn info vue-virtual-scroller version --json | jq -r '.data')-${{ steps.vars.outputs.branch }}-${{ steps.vars.outputs.sha_short }}"'
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
