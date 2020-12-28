@@ -1,4 +1,11 @@
 export let supportsPassive = false
+export let isTouch = false
+
+function receiveTouch () {
+  isTouch = true
+
+  window.removeEventListener('touchstart', receiveTouch)
+}
 
 if (typeof window !== 'undefined') {
   supportsPassive = false
@@ -10,4 +17,8 @@ if (typeof window !== 'undefined') {
     })
     window.addEventListener('test', null, opts)
   } catch (e) {}
+
+  window.addEventListener('touchstart', receiveTouch, {
+    passive: true,
+  })
 }

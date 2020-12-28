@@ -33,6 +33,7 @@
 <script>
 import RecycleScroller from './RecycleScroller.vue'
 import { props, simpleArray } from './common'
+import { isTouch } from '../utils'
 
 export default {
   name: 'DynamicScroller',
@@ -146,6 +147,8 @@ export default {
     },
 
     itemsWithSize (next, prev) {
+      if (isTouch) return
+
       const scrollTop = this.$el.scrollTop
 
       // Calculate total diff between prev and next sizes
