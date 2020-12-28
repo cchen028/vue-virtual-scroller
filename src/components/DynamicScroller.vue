@@ -33,6 +33,7 @@
 <script>
 import RecycleScroller from './RecycleScroller.vue'
 import { props, simpleArray } from './common'
+import { isTouch } from '../utils'
 
 export default {
   name: 'DynamicScroller',
@@ -144,9 +145,35 @@ export default {
     direction (value) {
       this.forceUpdate(true)
     },
+
+    itemsWithSize (next, prev) {
+      if (isTouch) return
+
+      const scrollTop = this.$el.scrollTop
+
+      // Calculate total diff between prev and next sizes
+      // over current scroll top. Then add it to scrollTop to
+      // avoid jumping the contents that the user is seeing.
+      let prevActiveTop = 0; let activeTop = 0
+      const length = Math.min(next.length, prev.length)
+      for (let i = 0; i < length; i++) {
+        if (prevActiveTop >= scrollTop) {
+          break
+        }
+        prevActiveTop += prev[i].size || this.minItemSize
+        activeTop += next[i].size || this.minItemSize
+      }
+      const offset = activeTop - prevActiveTop
+
+      if (offset === 0) {
+        return
+      }
+
+      this.$el.scrollTop += offset
+    },
   },
 
-  created () {
+  beforeCreate () {
     this.$_updates = []
     this.$_undefinedSizes = 0
     this.$_undefinedMap = {}
