@@ -31,7 +31,7 @@ Blazing fast scrolling of any amount of data | [Live demo](https://akryum.github
 # Installation
 
 ```
-npm install --save vue-virtual-scroller
+npm install --save @akryuminfinitum/vue-virtual-scroller
 ```
 
 **⚠️ `vue-virtual-scroller` now uses [vue-observe-visibility](https://github.com/Akryum/vue-observe-visibility#installation) to automatically refresh itself when shown to prevent display glitches. This means you need to include the [Intersection Observer polyfill](https://github.com/w3c/IntersectionObserver/tree/master/polyfill) needed by `vue-observe-visibility` for this to work in old browsers (like Internet Explorer).**
@@ -42,7 +42,7 @@ Install all the components:
 
 ```javascript
 import Vue from 'vue'
-import VueVirtualScroller from 'vue-virtual-scroller'
+import VueVirtualScroller from '@akryuminfinitum/vue-virtual-scroller'
 
 Vue.use(VueVirtualScroller)
 ```
@@ -51,7 +51,7 @@ Use specific components:
 
 ```javascript
 import Vue from 'vue'
-import { RecycleScroller } from 'vue-virtual-scroller'
+import { RecycleScroller } from '@akryuminfinitum/vue-virtual-scroller'
 
 Vue.component('RecycleScroller', RecycleScroller)
 ```
@@ -59,16 +59,16 @@ Vue.component('RecycleScroller', RecycleScroller)
 **⚠️ The line below should be included when importing the package:**
 
 ```js
-import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
+import '@akryuminfinitum/vue-virtual-scroller/dist/vue-virtual-scroller.css'
 ```
 
 ## Browser
 
 ```html
-<link rel="stylesheet" href="vue-virtual-scroller/dist/vue-virtual-scroller.css"/>
+<link rel="stylesheet" href="@akryuminfinitum/vue-virtual-scroller/dist/vue-virtual-scroller.css"/>
 
 <script src="vue.js"></script>
-<script src="vue-virtual-scroller/dist/vue-virtual-scroller.min.js"></script>
+<script src="@akryuminfinitum/vue-virtual-scroller/dist/vue-virtual-scroller.min.js"></script>
 ```
 
 If Vue is detected, the plugin will be installed automatically. If not, install the component:
@@ -437,7 +437,7 @@ In this example, we use the `id` of the `item` to have a "scoped" state to the i
 </template>
 
 <script>
-import { IdState } from 'vue-virtual-scroller'
+import { IdState } from '@akryuminfinitum/vue-virtual-scroller'
 
 export default {
   mixins: [
