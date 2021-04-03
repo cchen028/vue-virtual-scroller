@@ -1,5 +1,5 @@
 {
-  "name": "@akryuminfinitum/vue-virtual-scroller",
+  "name": "@cchen028/vue-virtual-scroller",
   "description": "Smooth scrolling for any amount of data",
   "version": "1.0.11-canary.2",
   "author": {
@@ -27,7 +27,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/AkryumInfinitum/vue-virtual-scroller.git"
+    "url": "git+https://github.com/cchen028/vue-virtual-scroller.git"
   },
   "bugs": {
     "url": "https://github.com/Akryum/vue-virtual-scroller/issues"
