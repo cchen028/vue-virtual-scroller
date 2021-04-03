@@ -239,6 +239,8 @@ export default {
         unusedViews.set(type, unusedPool)
       }
       unusedPool.push(view)
+      console.log(JSON.stringify(view));
+      this.$refs.wrapper.$el.blur();
       if (!fake) {
         view.nr.used = false
         view.position = -9999
