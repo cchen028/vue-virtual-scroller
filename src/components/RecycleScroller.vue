@@ -120,11 +120,6 @@ export default {
       type: Boolean,
       default: true,
     },
-
-    sortKeyCodes: {
-      type: Array,
-      default: () => [],
-    },
   },
 
   data () {
@@ -168,7 +163,12 @@ export default {
 
   watch: {
     items (newVal, oldVal) {
-      const me = this;
+      const me = this
+      if (newVal && oldVal && newVal.length !== oldVal.length){
+        me.$nextTick(() => {
+          me.sortViews()
+        })
+      }
 
       me.updateVisibleItems(true)
     },
@@ -293,24 +293,6 @@ export default {
           this.$emit('hidden')
         }
       }
-    },
-
-    handleKeyDown (event) {
-      const keyCode = event.which || event.keyCode || 0
-
-      if (this.sortKeyCodes.indexOf(keyCode) > -1 || this.isUndoPressed(event) || this.isRedoPressed(event)) {
-        this.sortViews()
-      }
-    },
-
-    isUndoPressed (event) {
-      const keyCode = event.keyCode || event.which
-      return (event.metaKey || event.ctrlKey) && keyCode === 90
-    },
-
-    isRedoPressed (event) {
-      const keyCode = event.keyCode || event.which
-      return (event.metaKey || event.ctrlKey) && event.shiftKey && keyCode === 90
     },
 
     updateVisibleItems (checkItem, checkPositionDiff = false) {
@@ -590,10 +572,6 @@ export default {
         passive: true,
       } : false)
       this.listenerTarget.addEventListener('resize', this.handleResize)
-
-      if (this.sortKeyCodes.length) {
-        this.listenerTarget.addEventListener('keydown', this.handleKeyDown)
-      }
     },
 
     removeListeners () {
@@ -603,11 +581,6 @@ export default {
 
       this.listenerTarget.removeEventListener('scroll', this.handleScroll)
       this.listenerTarget.removeEventListener('resize', this.handleResize)
-
-      if (this.sortKeyCodes.length) {
-        this.listenerTarget.removeEventListener('keydown', this.handleKeyDown)
-      }
-
       this.listenerTarget = null
     },
 
