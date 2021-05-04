@@ -5,6 +5,7 @@
     :min-item-size="minItemSize"
     :direction="direction"
     :buffer="buffer"
+    :sort-key-codes="sortKeyCodes"
     key-field="id"
     v-bind="$attrs"
     @resize="onScrollerResize"
@@ -85,6 +86,11 @@ export default {
     buffer: {
       type: Number,
       default: 200,
+    },
+
+    sortKeyCodes: {
+      type: Array,
+      default: () => [],
     },
   },
 

@@ -120,6 +120,11 @@ export default {
       type: Boolean,
       default: true,
     },
+
+    sortKeyCodes: {
+      type: Array,
+      default: () => [],
+    },
   },
 
   data () {
@@ -162,8 +167,10 @@ export default {
   },
 
   watch: {
-    items () {
-      this.updateVisibleItems(true)
+    items (newVal, oldVal) {
+      const me = this;
+
+      me.updateVisibleItems(true)
     },
 
     pageMode () {
@@ -239,8 +246,6 @@ export default {
         unusedViews.set(type, unusedPool)
       }
       unusedPool.push(view)
-      console.log(JSON.stringify(view));
-      this.$refs.wrapper.$el.blur();
       if (!fake) {
         view.nr.used = false
         view.position = -9999
@@ -254,11 +259,18 @@ export default {
     },
 
     handleScroll (event) {
+      const me = this
       if (!this.$_scrollDirty) {
         this.$_scrollDirty = true
         requestAnimationFrame(() => {
           this.$_scrollDirty = false
+          // clear the timeout for sorting
+          clearTimeout(me.$_sortTimer)
           const { continuous } = this.updateVisibleItems(false, true)
+
+          // After the user has finished scrolling
+          // Sort views so text selection is correct
+          me.$_sortTimer = setTimeout(me.sortViews, 100)
 
           // It seems sometimes chrome doesn't fire scroll event :/
           // When non continous scrolling is ending, we force a refresh
@@ -283,6 +295,24 @@ export default {
       }
     },
 
+    handleKeyDown (event) {
+      const keyCode = event.which || event.keyCode || 0
+
+      if (this.sortKeyCodes.indexOf(keyCode) > -1 || this.isUndoPressed(event) || this.isRedoPressed(event)) {
+        this.sortViews()
+      }
+    },
+
+    isUndoPressed (event) {
+      const keyCode = event.keyCode || event.which
+      return (event.metaKey || event.ctrlKey) && keyCode === 90
+    },
+
+    isRedoPressed (event) {
+      const keyCode = event.keyCode || event.which
+      return (event.metaKey || event.ctrlKey) && event.shiftKey && keyCode === 90
+    },
+
     updateVisibleItems (checkItem, checkPositionDiff = false) {
       const itemSize = this.itemSize
       const minItemSize = this.$_computedMinItemSize
@@ -296,6 +326,9 @@ export default {
       const pool = this.pool
       let startIndex, endIndex
       let totalSize
+
+      // // clear the timeout for sorting
+      // clearTimeout(this.$_sortTimer)
 
       if (!count) {
         startIndex = endIndex = totalSize = 0
@@ -489,10 +522,9 @@ export default {
 
       if (this.emitUpdate) this.$emit('update', startIndex, endIndex)
 
-      // After the user has finished scrolling
-      // Sort views so text selection is correct
-      clearTimeout(this.$_sortTimer)
-      this.$_sortTimer = setTimeout(this.sortViews, 300)
+      // // After the user has finished scrolling
+      // // Sort views so text selection is correct
+      // this.$_sortTimer = setTimeout(this.sortViews, 30)
 
       return {
         continuous,
@@ -558,6 +590,10 @@ export default {
         passive: true,
       } : false)
       this.listenerTarget.addEventListener('resize', this.handleResize)
+
+      if (this.sortKeyCodes.length) {
+        this.listenerTarget.addEventListener('keydown', this.handleKeyDown)
+      }
     },
 
     removeListeners () {
@@ -567,6 +603,10 @@ export default {
 
       this.listenerTarget.removeEventListener('scroll', this.handleScroll)
       this.listenerTarget.removeEventListener('resize', this.handleResize)
+
+      if (this.sortKeyCodes.length) {
+        this.listenerTarget.removeEventListener('keydown', this.handleKeyDown)
+      }
 
       this.listenerTarget = null
     },
