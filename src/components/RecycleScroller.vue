@@ -164,7 +164,7 @@ export default {
   watch: {
     items (newVal, oldVal) {
       const me = this
-      if (newVal && oldVal && newVal.length !== oldVal.length){
+      if (newVal && oldVal && newVal.length !== oldVal.length) {
         me.$nextTick(() => {
           me.sortViews()
         })
@@ -270,13 +270,13 @@ export default {
 
           // After the user has finished scrolling
           // Sort views so text selection is correct
-          me.$_sortTimer = setTimeout(me.sortViews, 100)
+          me.$_sortTimer = setTimeout(me.sortViews, 0)
 
           // It seems sometimes chrome doesn't fire scroll event :/
           // When non continous scrolling is ending, we force a refresh
           if (!continuous) {
             clearTimeout(this.$_refreshTimout)
-            this.$_refreshTimout = setTimeout(this.handleScroll, 100)
+            this.$_refreshTimout = setTimeout(this.handleScroll, 0)
           }
         })
       }
