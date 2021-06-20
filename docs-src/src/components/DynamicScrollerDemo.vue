@@ -10,6 +10,8 @@
     <DynamicScroller
       :items="filteredItems"
       :min-item-size="54"
+      :buffer="300"
+      :detectHover="false"
       class="scroller"
     >
       <template #before>
@@ -39,7 +41,7 @@
               class="image"
             >
           </div>
-          <div class="text">
+          <div class="text" contenteditable="plain-text">
             {{ item.message }}
           </div>
           <div class="index">
@@ -55,6 +57,8 @@
 <script>
 import { generateMessage } from '../data'
 
+import DynamicScroller from '../../../src/components/DynamicScroller.vue'
+import DynamicScrollerItem from '../../../src/components/DynamicScrollerItem.vue'
 const items = []
 for (let i = 0; i < 10000; i++) {
   items.push({
@@ -70,7 +74,10 @@ export default {
       search: '',
     }
   },
-
+  components:{
+    DynamicScroller,
+    DynamicScrollerItem
+  },
   computed: {
     filteredItems () {
       const { search, items } = this
@@ -82,7 +89,7 @@ export default {
 
   methods: {
     changeMessage (message) {
-      Object.assign(message, generateMessage())
+      //Object.assign(message, generateMessage())
     },
   },
 }
