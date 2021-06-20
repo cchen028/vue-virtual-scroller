@@ -1,54 +1,29 @@
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('vue')) :
   typeof define === 'function' && define.amd ? define(['exports', 'vue'], factory) :
-  (global = global || self, factory(global['vue-virtual-scroller'] = {}, global.Vue));
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global['vue-virtual-scroller'] = {}, global.Vue));
 }(this, (function (exports, Vue) { 'use strict';
 
-  Vue = Vue && Object.prototype.hasOwnProperty.call(Vue, 'default') ? Vue['default'] : Vue;
+  function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+
+  var Vue__default = /*#__PURE__*/_interopDefaultLegacy(Vue);
 
   var config = {
     itemsLimit: 1000
   };
-
-  function _typeof(obj) {
-    "@babel/helpers - typeof";
-
-    if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-      _typeof = function (obj) {
-        return typeof obj;
-      };
-    } else {
-      _typeof = function (obj) {
-        return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-      };
-    }
-
-    return _typeof(obj);
-  }
-
-  function _defineProperty(obj, key, value) {
-    if (key in obj) {
-      Object.defineProperty(obj, key, {
-        value: value,
-        enumerable: true,
-        configurable: true,
-        writable: true
-      });
-    } else {
-      obj[key] = value;
-    }
-
-    return obj;
-  }
 
   function ownKeys(object, enumerableOnly) {
     var keys = Object.keys(object);
 
     if (Object.getOwnPropertySymbols) {
       var symbols = Object.getOwnPropertySymbols(object);
-      if (enumerableOnly) symbols = symbols.filter(function (sym) {
-        return Object.getOwnPropertyDescriptor(object, sym).enumerable;
-      });
+
+      if (enumerableOnly) {
+        symbols = symbols.filter(function (sym) {
+          return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+        });
+      }
+
       keys.push.apply(keys, symbols);
     }
 
@@ -75,12 +50,43 @@
     return target;
   }
 
+  function _typeof$1(obj) {
+    "@babel/helpers - typeof";
+
+    if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+      _typeof$1 = function (obj) {
+        return typeof obj;
+      };
+    } else {
+      _typeof$1 = function (obj) {
+        return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+      };
+    }
+
+    return _typeof$1(obj);
+  }
+
+  function _defineProperty(obj, key, value) {
+    if (key in obj) {
+      Object.defineProperty(obj, key, {
+        value: value,
+        enumerable: true,
+        configurable: true,
+        writable: true
+      });
+    } else {
+      obj[key] = value;
+    }
+
+    return obj;
+  }
+
   function _unsupportedIterableToArray(o, minLen) {
     if (!o) return;
     if (typeof o === "string") return _arrayLikeToArray(o, minLen);
     var n = Object.prototype.toString.call(o).slice(8, -1);
     if (n === "Object" && o.constructor) n = o.constructor.name;
-    if (n === "Map" || n === "Set") return Array.from(n);
+    if (n === "Map" || n === "Set") return Array.from(o);
     if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
   }
 
@@ -92,9 +98,12 @@
     return arr2;
   }
 
-  function _createForOfIteratorHelper(o) {
-    if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) {
-      if (Array.isArray(o) || (o = _unsupportedIterableToArray(o))) {
+  function _createForOfIteratorHelper(o, allowArrayLike) {
+    var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"];
+
+    if (!it) {
+      if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") {
+        if (it) o = it;
         var i = 0;
 
         var F = function () {};
@@ -120,13 +129,12 @@
       throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
     }
 
-    var it,
-        normalCompletion = true,
+    var normalCompletion = true,
         didErr = false,
         err;
     return {
       s: function () {
-        it = o[Symbol.iterator]();
+        it = it.call(o);
       },
       n: function () {
         var step = it.next();
@@ -237,41 +245,41 @@
   };
 
   // Install the components
-  function install(Vue) {
+  function install$1(Vue) {
   	Vue.component('resize-observer', ResizeObserver$1);
   	Vue.component('ResizeObserver', ResizeObserver$1);
   }
 
   // Plugin
-  var plugin = {
+  var plugin$2 = {
   	// eslint-disable-next-line no-undef
   	version: "0.4.5",
-  	install: install
+  	install: install$1
   };
 
   // Auto-install
-  var GlobalVue = null;
+  var GlobalVue$2 = null;
   if (typeof window !== 'undefined') {
-  	GlobalVue = window.Vue;
+  	GlobalVue$2 = window.Vue;
   } else if (typeof global !== 'undefined') {
-  	GlobalVue = global.Vue;
+  	GlobalVue$2 = global.Vue;
   }
-  if (GlobalVue) {
-  	GlobalVue.use(plugin);
+  if (GlobalVue$2) {
+  	GlobalVue$2.use(plugin$2);
   }
 
-  function _typeof$1(obj) {
+  function _typeof(obj) {
     if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-      _typeof$1 = function (obj) {
+      _typeof = function (obj) {
         return typeof obj;
       };
     } else {
-      _typeof$1 = function (obj) {
+      _typeof = function (obj) {
         return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
       };
     }
 
-    return _typeof$1(obj);
+    return _typeof(obj);
   }
 
   function _classCallCheck(instance, Constructor) {
@@ -372,7 +380,7 @@
   function deepEqual(val1, val2) {
     if (val1 === val2) return true;
 
-    if (_typeof$1(val1) === 'object') {
+    if (_typeof(val1) === 'object') {
       for (var key in val1) {
         if (!deepEqual(val1[key], val2[key])) {
           return false;
@@ -533,7 +541,7 @@
     unbind: unbind
   };
 
-  function install$1(Vue) {
+  function install(Vue) {
     Vue.directive('observe-visibility', ObserveVisibility);
     /* -- Add more components here -- */
   }
@@ -545,7 +553,7 @@
   var plugin$1 = {
     // eslint-disable-next-line no-undef
     version: "0.4.6",
-    install: install$1
+    install: install
   };
 
   var GlobalVue$1 = null;
@@ -568,7 +576,7 @@
 
   var scrollparent = createCommonjsModule(function (module) {
   (function (root, factory) {
-    if ( module.exports) {
+    if (module.exports) {
       module.exports = factory();
     } else {
       root.Scrollparent = factory();
@@ -632,7 +640,7 @@
     }
   };
   function simpleArray() {
-    return this.items.length && _typeof(this.items[0]) !== 'object';
+    return this.items.length && _typeof$1(this.items[0]) !== 'object';
   }
 
   var supportsPassive = false;
@@ -651,7 +659,7 @@
   }
 
   var uid = 0;
-  var script = {
+  var script$2 = {
     name: 'RecycleScroller',
     components: {
       ResizeObserver: ResizeObserver$1
@@ -659,7 +667,7 @@
     directives: {
       ObserveVisibility: ObserveVisibility
     },
-    props: _objectSpread2({}, props, {
+    props: _objectSpread2(_objectSpread2({}, props), {}, {
       itemSize: {
         type: Number,
         default: null
@@ -1252,9 +1260,9 @@
   }
 
   /* script */
-  const __vue_script__ = script;
+  const __vue_script__$2 = script$2;
   /* template */
-  var __vue_render__ = function() {
+  var __vue_render__$1 = function() {
     var _obj, _obj$1;
     var _vm = this;
     var _h = _vm.$createElement;
@@ -1358,17 +1366,17 @@
       1
     )
   };
-  var __vue_staticRenderFns__ = [];
-  __vue_render__._withStripped = true;
+  var __vue_staticRenderFns__$1 = [];
+  __vue_render__$1._withStripped = true;
 
     /* style */
-    const __vue_inject_styles__ = undefined;
+    const __vue_inject_styles__$2 = undefined;
     /* scoped */
-    const __vue_scope_id__ = undefined;
+    const __vue_scope_id__$2 = undefined;
     /* module identifier */
-    const __vue_module_identifier__ = undefined;
+    const __vue_module_identifier__$2 = undefined;
     /* functional template */
-    const __vue_is_functional_template__ = false;
+    const __vue_is_functional_template__$2 = false;
     /* style inject */
     
     /* style inject SSR */
@@ -1377,13 +1385,13 @@
     
 
     
-    const __vue_component__ = normalizeComponent(
-      { render: __vue_render__, staticRenderFns: __vue_staticRenderFns__ },
-      __vue_inject_styles__,
-      __vue_script__,
-      __vue_scope_id__,
-      __vue_is_functional_template__,
-      __vue_module_identifier__,
+    const __vue_component__$2 = /*#__PURE__*/normalizeComponent(
+      { render: __vue_render__$1, staticRenderFns: __vue_staticRenderFns__$1 },
+      __vue_inject_styles__$2,
+      __vue_script__$2,
+      __vue_scope_id__$2,
+      __vue_is_functional_template__$2,
+      __vue_module_identifier__$2,
       false,
       undefined,
       undefined,
@@ -1393,7 +1401,7 @@
   var script$1 = {
     name: 'DynamicScroller',
     components: {
-      RecycleScroller: __vue_component__
+      RecycleScroller: __vue_component__$2
     },
     inheritAttrs: false,
     provide: function provide() {
@@ -1429,7 +1437,7 @@
         vscrollResizeObserver: this.$_resizeObserver
       };
     },
-    props: _objectSpread2({}, props, {
+    props: _objectSpread2(_objectSpread2({}, props), {}, {
       minItemSize: {
         type: [Number, String],
         required: true
@@ -1579,7 +1587,7 @@
   const __vue_script__$1 = script$1;
 
   /* template */
-  var __vue_render__$1 = function() {
+  var __vue_render__ = function() {
     var _vm = this;
     var _h = _vm.$createElement;
     var _c = _vm._self._c || _h;
@@ -1634,8 +1642,8 @@
       2
     )
   };
-  var __vue_staticRenderFns__$1 = [];
-  __vue_render__$1._withStripped = true;
+  var __vue_staticRenderFns__ = [];
+  __vue_render__._withStripped = true;
 
     /* style */
     const __vue_inject_styles__$1 = undefined;
@@ -1653,8 +1661,8 @@
     
 
     
-    const __vue_component__$1 = normalizeComponent(
-      { render: __vue_render__$1, staticRenderFns: __vue_staticRenderFns__$1 },
+    const __vue_component__$1 = /*#__PURE__*/normalizeComponent(
+      { render: __vue_render__, staticRenderFns: __vue_staticRenderFns__ },
       __vue_inject_styles__$1,
       __vue_script__$1,
       __vue_scope_id__$1,
@@ -1666,7 +1674,7 @@
       undefined
     );
 
-  var script$2 = {
+  var script = {
     name: 'DynamicScrollerItem',
     inject: ['vscrollData', 'vscrollParent', 'vscrollResizeObserver'],
     props: {
@@ -1873,18 +1881,18 @@
   };
 
   /* script */
-  const __vue_script__$2 = script$2;
+  const __vue_script__ = script;
 
   /* template */
 
     /* style */
-    const __vue_inject_styles__$2 = undefined;
+    const __vue_inject_styles__ = undefined;
     /* scoped */
-    const __vue_scope_id__$2 = undefined;
+    const __vue_scope_id__ = undefined;
     /* module identifier */
-    const __vue_module_identifier__$2 = undefined;
+    const __vue_module_identifier__ = undefined;
     /* functional template */
-    const __vue_is_functional_template__$2 = undefined;
+    const __vue_is_functional_template__ = undefined;
     /* style inject */
     
     /* style inject SSR */
@@ -1893,13 +1901,13 @@
     
 
     
-    const __vue_component__$2 = normalizeComponent(
+    const __vue_component__ = /*#__PURE__*/normalizeComponent(
       {},
-      __vue_inject_styles__$2,
-      __vue_script__$2,
-      __vue_scope_id__$2,
-      __vue_is_functional_template__$2,
-      __vue_module_identifier__$2,
+      __vue_inject_styles__,
+      __vue_script__,
+      __vue_scope_id__,
+      __vue_is_functional_template__,
+      __vue_module_identifier__,
       false,
       undefined,
       undefined,
@@ -1914,7 +1922,7 @@
     } : _ref$idProp;
 
     var store = {};
-    var vm = new Vue({
+    var vm = new Vue__default['default']({
       data: function data() {
         return {
           store: store
@@ -1999,15 +2007,15 @@
   }
 
   function registerComponents(Vue, prefix) {
-    Vue.component("".concat(prefix, "recycle-scroller"), __vue_component__);
-    Vue.component("".concat(prefix, "RecycleScroller"), __vue_component__);
+    Vue.component("".concat(prefix, "recycle-scroller"), __vue_component__$2);
+    Vue.component("".concat(prefix, "RecycleScroller"), __vue_component__$2);
     Vue.component("".concat(prefix, "dynamic-scroller"), __vue_component__$1);
     Vue.component("".concat(prefix, "DynamicScroller"), __vue_component__$1);
-    Vue.component("".concat(prefix, "dynamic-scroller-item"), __vue_component__$2);
-    Vue.component("".concat(prefix, "DynamicScrollerItem"), __vue_component__$2);
+    Vue.component("".concat(prefix, "dynamic-scroller-item"), __vue_component__);
+    Vue.component("".concat(prefix, "DynamicScrollerItem"), __vue_component__);
   }
 
-  var plugin$2 = {
+  var plugin = {
     // eslint-disable-next-line no-undef
     version: "1.0.10",
     install: function install(Vue, options) {
@@ -2028,23 +2036,23 @@
     }
   };
 
-  var GlobalVue$2 = null;
+  var GlobalVue = null;
 
   if (typeof window !== 'undefined') {
-    GlobalVue$2 = window.Vue;
+    GlobalVue = window.Vue;
   } else if (typeof global !== 'undefined') {
-    GlobalVue$2 = global.Vue;
+    GlobalVue = global.Vue;
   }
 
-  if (GlobalVue$2) {
-    GlobalVue$2.use(plugin$2);
+  if (GlobalVue) {
+    GlobalVue.use(plugin);
   }
 
   exports.DynamicScroller = __vue_component__$1;
-  exports.DynamicScrollerItem = __vue_component__$2;
+  exports.DynamicScrollerItem = __vue_component__;
   exports.IdState = IdState;
-  exports.RecycleScroller = __vue_component__;
-  exports.default = plugin$2;
+  exports.RecycleScroller = __vue_component__$2;
+  exports.default = plugin;
 
   Object.defineProperty(exports, '__esModule', { value: true });
 
