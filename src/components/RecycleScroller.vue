@@ -165,9 +165,7 @@ export default {
     items (newVal, oldVal) {
       const me = this
       if (newVal && oldVal && newVal.length !== oldVal.length) {
-        me.$nextTick(() => {
-          me.sortViews()
-        })
+        me.sortViews()
       }
 
       me.updateVisibleItems(true)
@@ -271,7 +269,6 @@ export default {
           // After the user has finished scrolling
           // Sort views so text selection is correct
           me.$_sortTimer = setTimeout(me.sortViews, 0)
-
           // It seems sometimes chrome doesn't fire scroll event :/
           // When non continous scrolling is ending, we force a refresh
           if (!continuous) {
@@ -611,7 +608,15 @@ export default {
     },
 
     sortViews () {
-      this.pool.sort((viewA, viewB) => viewA.nr.index - viewB.nr.index)
+      const me = this
+      me.pool.sort((viewA, viewB) => viewA.nr.index - viewB.nr.index)
+      me.$nextTick(function () {
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            me.$emit('sort')
+          })
+        })
+      })
     },
   },
 }

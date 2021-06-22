@@ -9,6 +9,7 @@
     v-bind="$attrs"
     @resize="onScrollerResize"
     @visible="onScrollerVisible"
+    @sort="$emit('sort')"
     v-on="listeners"
   >
     <template slot-scope="{ item: itemWithSize, index, active }">
