@@ -25,6 +25,7 @@
     >
       <div
         v-for="view of pool"
+        v-show="view.position!==-9999"
         :key="view.nr.id"
         :style="ready ? { transform: `translate${direction === 'vertical' ? 'Y' : 'X'}(${view.position}px)` } : null"
         class="vue-recycle-scroller__item-view"
@@ -165,7 +166,13 @@ export default {
     items (newVal, oldVal) {
       const me = this
       if (newVal && oldVal && newVal.length !== oldVal.length) {
-        me.sortViews()
+        // me.updateVisibleItems(false, true)
+        // me.sortViews()
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            me.sortViews()
+          })
+        })
       }
 
       me.updateVisibleItems(true)
@@ -268,12 +275,12 @@ export default {
 
           // After the user has finished scrolling
           // Sort views so text selection is correct
-          me.$_sortTimer = setTimeout(me.sortViews, 0)
+          me.$_sortTimer = setTimeout(me.sortViews, 50)
           // It seems sometimes chrome doesn't fire scroll event :/
           // When non continous scrolling is ending, we force a refresh
           if (!continuous) {
             clearTimeout(this.$_refreshTimout)
-            this.$_refreshTimout = setTimeout(this.handleScroll, 0)
+            this.$_refreshTimout = setTimeout(this.handleScroll, 50)
           }
         })
       }
@@ -610,11 +617,9 @@ export default {
     sortViews () {
       const me = this
       me.pool.sort((viewA, viewB) => viewA.nr.index - viewB.nr.index)
-      me.$nextTick(function () {
+      requestAnimationFrame(() => {
         requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            me.$emit('sort')
-          })
+          me.$emit('sort')
         })
       })
     },
