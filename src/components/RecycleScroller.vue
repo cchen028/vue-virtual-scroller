@@ -25,7 +25,6 @@
     >
       <div
         v-for="view of pool"
-        v-show="view.position!==-9999"
         :key="view.nr.id"
         :style="ready ? { transform: `translate${direction === 'vertical' ? 'Y' : 'X'}(${view.position}px)` } : null"
         class="vue-recycle-scroller__item-view"
@@ -163,19 +162,8 @@ export default {
   },
 
   watch: {
-    items (newVal, oldVal) {
-      const me = this
-      if (newVal && oldVal && newVal.length !== oldVal.length) {
-        // me.updateVisibleItems(false, true)
-        // me.sortViews()
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            me.sortViews()
-          })
-        })
-      }
-
-      me.updateVisibleItems(true)
+    items () {
+      this.updateVisibleItems(true)
     },
 
     pageMode () {
@@ -264,23 +252,17 @@ export default {
     },
 
     handleScroll (event) {
-      const me = this
       if (!this.$_scrollDirty) {
         this.$_scrollDirty = true
         requestAnimationFrame(() => {
           this.$_scrollDirty = false
-          // clear the timeout for sorting
-          clearTimeout(me.$_sortTimer)
           const { continuous } = this.updateVisibleItems(false, true)
 
-          // After the user has finished scrolling
-          // Sort views so text selection is correct
-          me.$_sortTimer = setTimeout(me.sortViews, 50)
           // It seems sometimes chrome doesn't fire scroll event :/
           // When non continous scrolling is ending, we force a refresh
           if (!continuous) {
             clearTimeout(this.$_refreshTimout)
-            this.$_refreshTimout = setTimeout(this.handleScroll, 50)
+            this.$_refreshTimout = setTimeout(this.handleScroll, 100)
           }
         })
       }
@@ -312,9 +294,6 @@ export default {
       const pool = this.pool
       let startIndex, endIndex
       let totalSize
-
-      // // clear the timeout for sorting
-      // clearTimeout(this.$_sortTimer)
 
       if (!count) {
         startIndex = endIndex = totalSize = 0
@@ -508,9 +487,10 @@ export default {
 
       if (this.emitUpdate) this.$emit('update', startIndex, endIndex)
 
-      // // After the user has finished scrolling
-      // // Sort views so text selection is correct
-      // this.$_sortTimer = setTimeout(this.sortViews, 30)
+      // After the user has finished scrolling
+      // Sort views so text selection is correct
+      clearTimeout(this.$_sortTimer)
+      this.$_sortTimer = setTimeout(this.sortViews, 300)
 
       return {
         continuous,
@@ -585,6 +565,7 @@ export default {
 
       this.listenerTarget.removeEventListener('scroll', this.handleScroll)
       this.listenerTarget.removeEventListener('resize', this.handleResize)
+
       this.listenerTarget = null
     },
 
@@ -615,13 +596,7 @@ export default {
     },
 
     sortViews () {
-      const me = this
-      me.pool.sort((viewA, viewB) => viewA.nr.index - viewB.nr.index)
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          me.$emit('sort')
-        })
-      })
+      this.pool.sort((viewA, viewB) => viewA.nr.index - viewB.nr.index)
     },
   },
 }

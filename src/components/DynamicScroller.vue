@@ -9,7 +9,6 @@
     v-bind="$attrs"
     @resize="onScrollerResize"
     @visible="onScrollerVisible"
-    @sort="$emit('sort')"
     v-on="listeners"
   >
     <template slot-scope="{ item: itemWithSize, index, active }">
@@ -48,26 +47,22 @@ export default {
   provide () {
     if (typeof ResizeObserver !== 'undefined') {
       this.$_resizeObserver = new ResizeObserver(entries => {
-        window.requestAnimationFrame(() => {
-          if (!Array.isArray(entries) || !entries.length) {
-            return
-          }
-          for (const entry of entries) {
-            if (entry.target) {
-              const event = new CustomEvent(
-                'resize',
-                {
-                  detail: {
-                    contentRect: entry.contentRect,
-                  },
+        for (const entry of entries) {
+          if (entry.target) {
+            const event = new CustomEvent(
+              'resize',
+              {
+                detail: {
+                  contentRect: entry.contentRect,
                 },
-              )
-              entry.target.dispatchEvent(event)
-            }
+              },
+            )
+            entry.target.dispatchEvent(event)
           }
-        })
+        }
       })
     }
+
     return {
       vscrollData: this.vscrollData,
       vscrollParent: this,
