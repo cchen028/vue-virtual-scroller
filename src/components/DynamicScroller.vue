@@ -82,6 +82,11 @@ export default {
       type: Number,
       default: 200,
     },
+
+    scrollBottomOffset: {
+      type: Number,
+      default: 5000,
+    },
   },
 
   data () {
@@ -149,7 +154,7 @@ export default {
     itemsWithSize (next, prev) {
       if (isTouch) return
 
-      const scrollTop = this.$el.scrollTop
+      const scrollTop = this.$el ? this.$el.scrollTop : 0
 
       // Calculate total diff between prev and next sizes
       // over current scroll top. Then add it to scrollTop to
@@ -215,6 +220,10 @@ export default {
 
     getItemSize (item, index = undefined) {
       const id = this.simpleArray ? (index != null ? index : this.items.indexOf(item)) : item[this.keyField]
+      if (this.simpleArray && id === -1) {
+        console.warn('Item not found in items array')
+        return 0
+      }
       return this.vscrollData.sizes[id] || 0
     },
 
@@ -224,12 +233,12 @@ export default {
       const el = this.$el
       // Item is inserted to the DOM
       this.$nextTick(() => {
-        el.scrollTop = el.scrollHeight + 5000
+        el.scrollTop = el.scrollHeight + this.scrollBottomOffset
         // Item sizes are computed
         const cb = () => {
-          el.scrollTop = el.scrollHeight + 5000
+          el.scrollTop = el.scrollHeight + this.scrollBottomOffset
           requestAnimationFrame(() => {
-            el.scrollTop = el.scrollHeight + 5000
+            el.scrollTop = el.scrollHeight + this.scrollBottomOffset
             if (this.$_undefinedSizes === 0) {
               this.$_scrollingToBottom = false
             } else {
