@@ -158,6 +158,20 @@ export default {
       return []
     },
 
+    itemIndexByKey () {
+      const { keyField, items } = this
+      if (!keyField || !items) return new Map()
+      const result = new Map()
+      for (let i = 0, l = items.length; i < l; i++) {
+        const item = items[i]
+        // Include ALL items like findIndex does, even if null/undefined
+        // Use the item itself as key for null/undefined items to match findIndex behavior
+        const keyValue = item?.[keyField]
+        result.set(keyValue, i)
+      }
+      return result
+    },
+
     simpleArray,
   },
 
@@ -292,6 +306,7 @@ export default {
       const views = this.$_views
       const unusedViews = this.$_unusedViews
       const pool = this.pool
+      const itemIndexByKey = this.itemIndexByKey
       let startIndex, endIndex
       let totalSize
 
@@ -393,9 +408,14 @@ export default {
           if (view.nr.used) {
             // Update view item index
             if (checkItem) {
-              view.nr.index = items.findIndex(
-                item => keyField ? item[keyField] === view.item[keyField] : item === view.item,
-              )
+              // Fast lookup that exactly matches original findIndex behavior
+              if (keyField) {
+                const keyValue = view.item?.[keyField]
+                const foundIndex = itemIndexByKey.get(keyValue)
+                view.nr.index = foundIndex !== undefined ? foundIndex : -1
+              } else {
+                view.nr.index = items.indexOf(view.item)
+              }
             }
 
             // Check if index is still in visible range
