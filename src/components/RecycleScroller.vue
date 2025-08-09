@@ -53,12 +53,84 @@
 </template>
 
 <script>
-import { ResizeObserver } from 'vue-resize'
+import { ResizeObserver as VueResizeObserver } from 'vue-resize'
 import { ObserveVisibility } from 'vue-observe-visibility'
 import ScrollParent from 'scrollparent'
 import config from '../config'
 import { props, simpleArray } from './common'
 import { supportsPassive } from '../utils'
+
+// Global ResizeObserver error suppression - runs immediately when module loads
+if (typeof window !== 'undefined' && !window._vueVirtualScrollerErrorSuppression) {
+  window._vueVirtualScrollerErrorSuppression = true
+
+  // Store original methods
+  const originalWindowAddEventListener = window.addEventListener
+  const originalWindowRemoveEventListener = window.removeEventListener
+  const originalOnerror = window.onerror
+
+  // Track wrapped listeners for proper removal
+  const listenerMap = new WeakMap()
+
+  // Helper function to check for ResizeObserver errors
+  const isResizeObserverError = (event) => {
+    const errorMessage = event.message || (event.error && event.error.message) || ''
+    return typeof errorMessage === 'string' &&
+           errorMessage.includes('ResizeObserver') &&
+           errorMessage.includes('loop') &&
+           (errorMessage.includes('completed') || errorMessage.includes('undelivered') || errorMessage.includes('notifications'))
+  }
+
+  // Override window.addEventListener to wrap error handlers
+  window.addEventListener = function (type, listener, options) {
+    if (type === 'error' && listener && typeof listener === 'function') {
+      // Create wrapped listener that suppresses ResizeObserver errors
+      const wrappedListener = function (event) {
+        if (isResizeObserverError(event)) {
+          event.stopImmediatePropagation()
+          event.preventDefault()
+          return false
+        }
+        return listener.call(this, event)
+      }
+
+      // Store mapping for removeEventListener
+      listenerMap.set(listener, wrappedListener)
+
+      return originalWindowAddEventListener.call(this, type, wrappedListener, options)
+    }
+    return originalWindowAddEventListener.call(this, type, listener, options)
+  }
+
+  // Override removeEventListener to handle wrapped listeners
+  window.removeEventListener = function (type, listener, options) {
+    if (type === 'error' && listener && listenerMap.has(listener)) {
+      const wrappedListener = listenerMap.get(listener)
+      listenerMap.delete(listener)
+      return originalWindowRemoveEventListener.call(this, type, wrappedListener, options)
+    }
+    return originalWindowRemoveEventListener.call(this, type, listener, options)
+  }
+
+  // Override window.onerror as additional protection
+  window.onerror = function (message, filename, lineno, colno, error) {
+    if (typeof message === 'string') {
+      const isResizeObserverLoopError =
+        message.includes('ResizeObserver') &&
+        message.includes('loop') &&
+        (message.includes('completed') || message.includes('undelivered') || message.includes('notifications'))
+
+      if (isResizeObserverLoopError) {
+        return true
+      }
+    }
+
+    if (originalOnerror) {
+      return originalOnerror.call(this, message, filename, lineno, colno, error)
+    }
+    return false
+  }
+}
 
 let uid = 0
 
@@ -66,7 +138,7 @@ export default {
   name: 'RecycleScroller',
 
   components: {
-    ResizeObserver,
+    ResizeObserver: VueResizeObserver,
   },
 
   directives: {
@@ -261,6 +333,11 @@ export default {
     },
 
     handleResize () {
+      // Suppress console errors during resize handling
+      if (this._suppressConsoleErrors) {
+        this._suppressConsoleErrors()
+      }
+
       this.$emit('resize')
       if (this.ready) this.updateVisibleItems(false)
     },
