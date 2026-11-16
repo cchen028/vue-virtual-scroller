@@ -1,23 +1,9 @@
-> ### 🚨 This repo is looking for maintainers
-> If you are interested in being a maintainer, shoot me an email at ericjrabil@gmail.com
-
 # vue-virtual-scroller
 
 [![npm](https://img.shields.io/npm/v/vue-virtual-scroller.svg) ![npm](https://img.shields.io/npm/dm/vue-virtual-scroller.svg)](https://www.npmjs.com/package/vue-virtual-scroller)
 [![vue2](https://img.shields.io/badge/vue-2.x-brightgreen.svg)](https://vuejs.org/)
 
-Blazing fast scrolling of any amount of data | [Live demo](https://akryum.github.io/vue-virtual-scroller/) | [Video demo](https://www.youtube.com/watch?v=Uzq1KQV8f4k)
-
-<p>
-  <a href="https://www.patreon.com/akryum" target="_blank">
-    <img src="https://c5.patreon.com/external/logo/become_a_patron_button.png" alt="Become a Patreon">
-  </a>
-</p>
-
-## Sponsors
-
-
-[![sponsors logos](https://guillaume-chau.info/sponsors.png)](https://guillaume-chau.info/sponsors)
+Blazing fast scrolling of any amount of data
 
 ## Table of contents
 
@@ -31,7 +17,7 @@ Blazing fast scrolling of any amount of data | [Live demo](https://akryum.github
 # Installation
 
 ```
-npm install --save @akryuminfinitum/vue-virtual-scroller
+npm install --save @cchen028/vue-virtual-scroller
 ```
 
 **⚠️ `vue-virtual-scroller` now uses [vue-observe-visibility](https://github.com/Akryum/vue-observe-visibility#installation) to automatically refresh itself when shown to prevent display glitches. This means you need to include the [Intersection Observer polyfill](https://github.com/w3c/IntersectionObserver/tree/master/polyfill) needed by `vue-observe-visibility` for this to work in old browsers (like Internet Explorer).**
@@ -42,7 +28,7 @@ Install all the components:
 
 ```javascript
 import Vue from 'vue'
-import VueVirtualScroller from '@akryuminfinitum/vue-virtual-scroller'
+import VueVirtualScroller from '@cchen028/vue-virtual-scroller'
 
 Vue.use(VueVirtualScroller)
 ```
@@ -51,7 +37,7 @@ Use specific components:
 
 ```javascript
 import Vue from 'vue'
-import { RecycleScroller } from '@akryuminfinitum/vue-virtual-scroller'
+import { RecycleScroller } from '@cchen028/vue-virtual-scroller'
 
 Vue.component('RecycleScroller', RecycleScroller)
 ```
@@ -59,16 +45,16 @@ Vue.component('RecycleScroller', RecycleScroller)
 **⚠️ The line below should be included when importing the package:**
 
 ```js
-import '@akryuminfinitum/vue-virtual-scroller/dist/vue-virtual-scroller.css'
+import '@cchen028/vue-virtual-scroller/dist/vue-virtual-scroller.css'
 ```
 
 ## Browser
 
 ```html
-<link rel="stylesheet" href="@akryuminfinitum/vue-virtual-scroller/dist/vue-virtual-scroller.css"/>
+<link rel="stylesheet" href="@cchen028/vue-virtual-scroller/dist/vue-virtual-scroller.css"/>
 
 <script src="vue.js"></script>
-<script src="@akryuminfinitum/vue-virtual-scroller/dist/vue-virtual-scroller.min.js"></script>
+<script src="@cchen028/vue-virtual-scroller/dist/vue-virtual-scroller.min.js"></script>
 ```
 
 If Vue is detected, the plugin will be installed automatically. If not, install the component:
@@ -437,7 +423,7 @@ In this example, we use the `id` of the `item` to have a "scoped" state to the i
 </template>
 
 <script>
-import { IdState } from '@akryuminfinitum/vue-virtual-scroller'
+import { IdState } from '@cchen028/vue-virtual-scroller'
 
 export default {
   mixins: [
@@ -472,3 +458,7 @@ export default {
 ## License
 
 [MIT](http://opensource.org/licenses/MIT)
+
+---
+
+Forked from [Akryum/vue-virtual-scroller](https://github.com/Akryum/vue-virtual-scroller)
